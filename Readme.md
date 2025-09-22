@@ -6,3 +6,8 @@
 ./gradlew build
 ./gradlew test
 ```
+
+## Run
+```bash
+./gradlew run
+```
