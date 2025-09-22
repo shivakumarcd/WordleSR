@@ -1,10 +1,11 @@
-package com.match;
+/* Temporary test class to execute sample test case */
+package com.game.wordle;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SampleMathTest {
-
+    // TODO : to be deleted
     @Test
     void testAdd() {
         SampleMath math = new SampleMath();
