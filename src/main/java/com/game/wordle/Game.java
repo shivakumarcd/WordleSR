@@ -3,8 +3,10 @@ package com.game.wordle;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO - TBD refactoring state of game into seperate class
 public class Game {
-    enum Color { GREEN, YELLOW, GRAY, UNKNOWN }
+
+    enum Color { GREEN, YELLOW, WHITE, UNKNOWN }
 
     class Box {
         char letter;
@@ -15,8 +17,8 @@ public class Game {
         List<Box> wordleWord;
 
         Guess(String guess) {
-            //TODO: string to array
-            //populate color based on matching words in dictionary
+            //TODO: string to box
+            //populate box color based on matching letters and position wrt solution word
         }
     }
 
@@ -26,6 +28,8 @@ public class Game {
     // TODO:create arraylist of length 5 for each position color
     private List<Guess> guessList = new ArrayList<>();
     private int usedGuesses = 0;
+
+    private String targetWord;
 
     Game() {
         //TODO : prepare dictionary by read word's list and sort and keep
@@ -42,7 +46,7 @@ public class Game {
     }
 
     public void reset() {
-        // TODO----
+        // TODO---- same target or new target
     }
 
     public void applyGameRules(String userInput) {
@@ -58,6 +62,19 @@ public class Game {
         return null;
     }
 
+    //TODO Display method with color printing
+
+    public String getTargetWord() {
+        return targetWord;
+    }
+
+    public void setTargetWord(String targetWord) {
+        this.targetWord = targetWord;
+    }
+
+    public static void changeAllowedAttepts(int maxForTesting) {
+        Game.noOfAllowedGuesses = maxForTesting;
+    }
 }
 
 

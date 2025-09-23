@@ -8,8 +8,39 @@ public class TestWordle {
     Game newGame = new Game();
 
     @Test
-    void testGameScenario1(){
-        newGame.reset();
+    void testGameScenario1_possibleUserInputs() {
+        String targetWord = "water";
+        newGame.setTargetWord("water");
+        Game.changeAllowedAttepts(100);
+
+        List<String> guessList = new ArrayList<>();
+        guessList.add("water");  // correct and game won
+        guessList.add("12345");  // invalid- not in dictionary
+
+        targetWord = "water";
+        guessList.add("12345");  // none matching
+        guessList.add("12t45");  // TODO 1 green vs multiple  vs edge case
+
+        guessList.add("t2345");  // TODO 1 yellow vs multiple  vs edge case
+        guessList.add("");  // TODO both vs multiple vs edge case
+        //TODO brainstorm and add other possibilities
+
+        /*
+        for (String testGuess : guessList) {
+            GuessResult result = game.guess(testGuess);
+            // TODO: call handleUserToGameInput(testGuess)-entry point
+            // TODO: add assertions about result
+        }
+        /*
+         */
+
+
+        //Edge case
+        targetWord = "abcde";
+
+
+        //TODO: newGame.reset();------if needs
+
         // TODO: Prepare states for vanilla test case
         // TODO: startNewGame() - initial setup/state needed for new game
         //                      - Prepare data for running the game
@@ -21,4 +52,5 @@ public class TestWordle {
         boolean result = false;
         assertEquals(true, result);
     }
+    //TODO group test cases user input level vs succeess/fail case...
 }

@@ -6,7 +6,7 @@ import java.util.InputMismatchException;
 public class Main {
     public static void main(String[] args) {
         boolean continueGameFlag = true;
-        System.out.println("Wordle game");
+        System.out.println("Welcome to Wordle game");
         while (continueGameFlag) {
             printOptionsMenu();
             switch (readChoice()) {
