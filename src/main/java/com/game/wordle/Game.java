@@ -2,79 +2,109 @@ package com.game.wordle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-//TODO - TBD refactoring state of game into seperate class
 public class Game {
+    enum Color {GREEN, YELLOW, WHITE}
 
-    enum Color { GREEN, YELLOW, WHITE, UNKNOWN }
-
-    class Box {
-        char letter;
-        Color color;
-    }
-
-    class Guess {
-        List<Box> wordleWord;
-
-        Guess(String guess) {
-            //TODO: string to box
-            //populate box color based on matching letters and position wrt solution word
-        }
-    }
-
-    public static List<String> dictionary = new ArrayList<>();
     private static int noOfAllowedGuesses = 5;
 
-    // TODO:create arraylist of length 5 for each position color
-    private List<Guess> guessList = new ArrayList<>();
-    private int usedGuesses = 0;
-
+    private WordleDictionary wordleDictionary;
+    private List<WordleWord> wordleWordGuesses = new ArrayList<>();
+    private int attemptsLeft = 5;// TODO: remove redundant attemptsLeft
     private String targetWord;
+    private GameState gameState = GameState.ON;
 
-    Game() {
-        //TODO : prepare dictionary by read word's list and sort and keep
-        // it ready for comparison using binary search or library or ask GPT for alternative options
-    }
-
-    public void startGame() {
-        // TOTO: Randomly choose target word to be guessed from word_list
-        // TODO: loop for 5 valid guesses
-    }
-
-    public void processUserInput(String userInput) {
-        // TODO: Read from command  line and create
-    }
-
-    public void reset() {
-        // TODO---- same target or new target
-    }
-
-    public void applyGameRules(String userInput) {
-        List<String> errorMessages = validateUserInput(userInput);
-        if (errorMessages != null && errorMessages.isEmpty()) {
-            return;
-        }
-        // TODO: Update game state based on user input
-    }
-
-    private List<String> validateUserInput(String userInput){
-        // TODO: implement worldList append errors to errorMsges
-        return null;
-    }
-
-    //TODO Display method with color printing
-
-    public String getTargetWord() {
-        return targetWord;
-    }
-
-    public void setTargetWord(String targetWord) {
+    Game(WordleDictionary wordleDictionary, String targetWord) {
+        this.wordleDictionary = wordleDictionary;
         this.targetWord = targetWord;
     }
 
-    public static void changeAllowedAttepts(int maxForTesting) {
+    //Used for test cases
+    public GameState getGameState() {
+        return this.gameState;
+    }
+
+    public void startGame() {
+        System.out.println("-------Game started-------");
+        for (int i = 1; i <= noOfAllowedGuesses && this.gameState == GameState.ON; i++) {
+            String userInputStr = this.readUserInput();
+            List<String> errorMessages = validateUserInput(userInputStr);
+            if (errorMessages.isEmpty()) {
+                WordleWord wordleWord = new WordleWord(this, userInputStr);
+                this.wordleWordGuesses.add(wordleWord);
+                wordleWord.updateColor(this.targetWord);
+                this.attemptsLeft--;
+                this.updateGameStatus();
+                this.printGuessResult();
+            } else {
+                i--;    //negating increment as this was not a valid attempt
+                for (String error : errorMessages) {
+                    System.out.println("Error: " + error);
+                }
+            }
+        }
+        // TODO: print lost in red and won in green
+        if (this.gameState == GameState.LOST) {
+            System.out.println("Correct wordle : " + this.targetWord);
+            System.out.println("Game lost. Play again");
+            System.out.println("---------------------------");
+        } else if (this.gameState == GameState.WON) {
+            System.out.println("Congratulations. Game won...");
+            System.out.println("---------------------------");
+        }
+    }
+
+    //made public to call from tests
+    public void updateGameStatus() {
+        WordleWord lastGuess = this.wordleWordGuesses.get(this.wordleWordGuesses.size() - 1);
+        if (lastGuess.word.equals(this.targetWord)) {
+            this.gameState = GameState.WON;
+            return;
+        }
+        if (this.attemptsLeft == 0) {
+            this.gameState = GameState.LOST;
+        }
+    }
+
+    public String readUserInput() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Attempts left = " + this.attemptsLeft);
+        System.out.print("Enter guess: ");
+        return scanner.nextLine();
+    }
+
+    private List<String> validateUserInput(String userInput) {
+        // TODO: validate length and present in dictionary, etc
+        List<String> errors = new ArrayList<>();
+        String errorMessage;
+        if (null == userInput || userInput.length() != 5 || !wordleDictionary.isValidWord(userInput)) {
+            errorMessage = "Invalid guess. Guess should be 5 letter English dictionary word(Current txt file don't has all the words)";
+            errors.add(errorMessage);
+        }
+        return errors;
+    }
+
+    public void printGuessResult() {
+        WordleWord recentGuess = this.wordleWordGuesses.get(this.wordleWordGuesses.size() - 1);
+        System.out.print("Guessed result: ");
+        for (Box box : recentGuess.wordleWord) {
+            if (box.color == Color.WHITE) {
+                System.out.print(TextColor.ANSI_RESET + String.valueOf(box.letter) + TextColor.ANSI_RESET);
+            } else if (box.color == Color.YELLOW) {
+                System.out.print(TextColor.ANSI_YELLOW + String.valueOf(box.letter) + TextColor.ANSI_RESET);
+            } else if (box.color == Color.GREEN) {
+                System.out.print(TextColor.ANSI_GREEN + String.valueOf(box.letter) + TextColor.ANSI_RESET);
+            }
+        }
+        System.out.println();
+    }
+
+    public static void changeAllowedAttemptsForTesting(int maxForTesting) {
         Game.noOfAllowedGuesses = maxForTesting;
     }
+
+    public void addToWorldeListForTesting(WordleWord wordleWord) {
+        this.wordleWordGuesses.add(wordleWord);
+    }
 }
-
-

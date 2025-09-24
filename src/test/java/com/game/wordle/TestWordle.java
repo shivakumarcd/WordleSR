@@ -2,22 +2,64 @@ package com.game.wordle;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestWordle {
-    Game newGame = new Game();
+    WordleDictionary wordleDictionary = new WordleDictionary();
 
     @Test
-    void testGameScenario1_possibleUserInputs() {
-        String targetWord = "water";
-        newGame.setTargetWord("water");
-        Game.changeAllowedAttepts(100);
+    void testSimpleSuccess() { //TODO: to be completed
+        boolean testSuccess = false;
+        Game newLocalGame = new Game(wordleDictionary, "water");
+        String guess = "water";
+        WordleWord wordleWord = new WordleWord(newLocalGame, guess);
+        wordleWord.updateColor(guess);
+        newLocalGame.addToWorldeListForTesting(wordleWord);
+        newLocalGame.updateGameStatus();
+        if (newLocalGame.getGameState() == GameState.WON) {
+            testSuccess = true;
+        }
+        assertTrue(testSuccess);
+    }
+
+    @Test
+    void testRule3() { //TODO: to be completed
+        boolean testSuccess = false;
+        assertEquals(true, testSuccess);
+    }
+
+    @Test
+    void testRule4() {//TODO: to be completed
+        /*
+            Testing if the correct word is WATER and you guess OTTER, the first T
+            must not get a yellow highlight.
+        * */
+        boolean testSuccess = false;
+        Game newLocalGame = new Game(wordleDictionary, "water");
+        String guess = "otter";
+
+
+        assertEquals(true, testSuccess);
+    }
+
+    @Test
+    void testGameScenario1_possibleUserInputs() { //TODO: other tests to be completed
+        Game globalSampleGame = new Game(wordleDictionary, "water");
+        boolean testSuccess = false;
+        Game.changeAllowedAttemptsForTesting(100);
+
+
+        Game.changeAllowedAttemptsForTesting(5);
 
         List<String> guessList = new ArrayList<>();
         guessList.add("water");  // correct and game won
         guessList.add("12345");  // invalid- not in dictionary
 
-        targetWord = "water";
+        String targetWord = "water";
         guessList.add("12345");  // none matching
         guessList.add("12t45");  // TODO 1 green vs multiple  vs edge case
 
@@ -27,19 +69,12 @@ public class TestWordle {
 
         /*
         for (String testGuess : guessList) {
-            GuessResult result = game.guess(testGuess);
+            GuessResult testSuccess = game.guess(testGuess);
             // TODO: call handleUserToGameInput(testGuess)-entry point
-            // TODO: add assertions about result
+            // TODO: add assertions about testSuccess
         }
-        /*
          */
 
-
-        //Edge case
-        targetWord = "abcde";
-
-
-        //TODO: newGame.reset();------if needs
 
         // TODO: Prepare states for vanilla test case
         // TODO: startNewGame() - initial setup/state needed for new game
@@ -49,8 +84,8 @@ public class TestWordle {
         // TODO: readPlayerInput() wait for and read player input
         // TODO: applyGamelogic() - based on input from player apply game logic
         //                        - and update state
-        boolean result = false;
-        assertEquals(true, result);
+
+        assertEquals(true, testSuccess);
     }
     //TODO group test cases user input level vs succeess/fail case...
 }
