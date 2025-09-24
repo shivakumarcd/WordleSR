@@ -9,5 +9,5 @@
 
 ## Run
 ```bash
-./gradlew run
+./gradlew run --console=plain
 ```

@@ -10,7 +10,11 @@ java {
 }
 
 application {
-    mainClass.set("com.match.Main")
+    mainClass.set("com.game.wordle.Main")
+}
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
 }
 
 group = "com.match"
